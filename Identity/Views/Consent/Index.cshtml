@@ -1,0 +1,54 @@
+﻿@model ConsentViewModel
+
+<div class="card m-auto" style="max-width: 450px">
+    <div class="card-body">
+        <p>
+            <strong>@Model.ClientName</strong> would like to access:
+        </p>
+
+        @Html.Partial("_ValidationSummary")
+
+        <form asp-action="Index">
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            @if (Model.IdentityScopes.Any())
+            {
+                @foreach (var scope in Model.IdentityScopes)
+                {
+                    @Html.Partial("ScopeItem", scope)
+                }
+            }
+
+            @if (Model.ResourceScopes.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var scope in Model.ResourceScopes)
+                    {
+                        @Html.Partial("ScopeItem", scope)
+                    }
+                </ul>
+            }
+
+            @if (Model.AllowRememberConsent)
+            {
+                <div class="my-2 text-right">
+                    <label asp-for="RememberConsent">
+                        <input asp-for="RememberConsent" />
+                        Remember my decision
+                    </label>
+                </div>
+            }
+
+            <div class="text-right">
+                <button name="consentValue" value="false" class="btn">Deny</button>
+                <button name="consentValue" value="true" class="btn btn-primary" autofocus>Accept</button>
+                @if (Model.ClientUrl != null)
+                {
+                    <a class="pull-right btn btn-default" target="_blank" href="@Model.ClientUrl">
+                        <strong>@Model.ClientName</strong>
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+</div>

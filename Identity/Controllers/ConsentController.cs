@@ -83,5 +83,46 @@ namespace Identity.Controllers
                 })
             });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(ConsentInputModel model)
+        {
+            if (model.Consent)
+            {
+                if (!_interaction.IsValidReturnUrl(model.ReturnUrl)
+                    || model.ScopesConsented == null
+                    || !model.ScopesConsented.Any())
+                {
+                    return View("Error");
+                }
+
+                var authorizationContext = await _interaction
+                    .GetAuthorizationContextAsync(model.ReturnUrl);
+
+                if (authorizationContext == null)
+                {
+                    return View("Error");
+                }
+
+                var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+                await _interaction.GrantConsentAsync(request, new ConsentResponse
+                {
+                    RememberConsent = model.RememberConsent,
+                    ScopesConsented = model.ScopesConsented
+                });
+                return Redirect(model.ReturnUrl);
+            }
+            else
+            {
+                var authorizationContext = await _interaction
+                .GetAuthorizationContextAsync(model.ReturnUrl);
+
+                var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+                await _interaction.GrantConsentAsync(request, ConsentResponse.Denied);
+                return Redirect(model.ReturnUrl);
+            }
+        }
     }
 }

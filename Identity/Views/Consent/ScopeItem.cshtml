@@ -1,0 +1,19 @@
+﻿@model ScopeViewModel
+
+<div>
+    <input class="d-inline" type="checkbox" name="ScopesConsented" id="scopes_@Model.Name" value="@Model.Name" checked="@Model.Checked" disabled="@Model.Required" />
+    @Model.DisplayName
+    @if (Model.Required)
+    {
+        <input type="hidden" name="ScopesConsented" value="@Model.Name" />
+    }
+    @if (Model.Required)
+    {
+        <span><em>(required)</em></span>
+    }
+
+    @if (Model.Description != null)
+    {
+        <em for="scopes_@Model.Name"> - @Model.Description</em>
+    }
+</div>
