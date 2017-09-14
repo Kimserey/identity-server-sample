@@ -34,6 +34,7 @@ namespace Identity
 
             services.AddIdentityServer()
                .AddTemporarySigningCredential()
+               .AddInMemoryPersistedGrants()
                .AddInMemoryIdentityResources(new List<IdentityResource> {
                     new IdentityResources.OpenId(),
                     new IdentityResources.Profile(),
